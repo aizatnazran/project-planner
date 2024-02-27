@@ -2,6 +2,7 @@
   <nav class="main-nav">
     <router-link :to="{ name: 'Home' }">Projects</router-link>
     <router-link :to="{ name: 'AddProject' }">Add a New Project</router-link>
+    <router-link :to="{ name: 'Staffs' }">Staff List</router-link>
   </nav>
 </template>
 

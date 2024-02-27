@@ -1,0 +1,28 @@
+{
+  "projects": [
+    {
+      "id": "1",
+      "title": "Front-end Development",
+      "details": "Create UI based on design",
+      "complete": false
+    },
+    {
+      "id": "2",
+      "title": "Back-end Development",
+      "details": "API Integration with AI",
+      "complete": false
+    }
+  ],
+  "staffs": [
+    {
+      "id": "1",
+      "name": "John Doe",
+      "position": "Front-end Developer"
+    },
+    {
+      "id": "2",
+      "name": "Jane Smith",
+      "position": "Back-end Developer"
+    }
+  ]
+}
