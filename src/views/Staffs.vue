@@ -1,6 +1,6 @@
 <template>
   <div class="home">
-    <FilterNav :current="current" @filterChange="current = $event" />
+    <FilterNavStaff :current="current" @filterChange="current = $event" />
     <div v-if="staffs && staffs.length">
       <div v-for="staff in filteredStaffs" :key="staff.id">
         <SingleStaff
@@ -14,12 +14,12 @@
 </template>
 
 <script>
-import FilterNav from "../components/FilterNav.vue";
+import FilterNavStaff from "../components/FilterNavStaff.vue";
 import SingleStaff from "../components/SingleStaff.vue";
 
 export default {
   name: "Home",
-  components: { SingleStaff, FilterNav },
+  components: { SingleStaff, FilterNavStaff },
   data() {
     return {
       staffs: [],

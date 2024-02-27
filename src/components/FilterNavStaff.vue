@@ -1,22 +1,10 @@
 <template>
   <nav class="filter-nav">
     <button @click="updateFilter('all')" :class="{ active: current === 'all' }">
-      View all
+      Staff List
     </button>
-    <button
-      @click="updateFilter('completed')"
-      :class="{ active: current === 'completed' }"
-    >
-      Completed
-    </button>
-    <button
-      @click="updateFilter('ongoing')"
-      :class="{ active: current === 'ongoing' }"
-    >
-      Ongoing
-    </button>
-    <router-link :to="{ name: 'AddProject' }" class="create-project-btn">
-      Add New Project
+    <router-link :to="{ name: 'AddStaff' }" class="create-project-btn">
+      Add New Staff
     </router-link>
   </nav>
 </template>

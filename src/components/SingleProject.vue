@@ -17,28 +17,57 @@
 </template>
 
 <script>
+import Swal from "sweetalert2";
+
 export default {
-  props: ['project'],
+  props: ["project"],
   data() {
     return {
       showDetails: false,
-      uri: 'http://localhost:3000/projects/' + this.project.id,
+      uri: "http://localhost:3000/projects/" + this.project.id,
     };
   },
   methods: {
     deleteProject() {
-      fetch(this.uri, { method: 'DELETE' })
-        .then(() => this.$emit('delete', this.project.id))
-        .catch((err) => console.log(err));
+      // Call SweetAlert2 for confirmation
+      Swal.fire({
+        title: "Are you sure?",
+        text: "You won't be able to revert this!",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonColor: "#3085d6",
+        cancelButtonColor: "#d33",
+        confirmButtonText: "Yes, delete it!",
+      }).then((result) => {
+        if (result.isConfirmed) {
+          fetch(this.uri, { method: "DELETE" })
+            .then(() => {
+              this.$emit("delete", this.project.id);
+              Swal.fire(
+                "Deleted!",
+                "Your project has been deleted.",
+                "success"
+              );
+            })
+            .catch((err) => {
+              console.log(err);
+              Swal.fire(
+                "Error!",
+                "There was an issue deleting the project.",
+                "error"
+              );
+            });
+        }
+      });
     },
     toggleComplete() {
       fetch(this.uri, {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ complete: !this.project.complete }),
       })
         .then(() => {
-          this.$emit('complete', this.project.id);
+          this.$emit("complete", this.project.id);
         })
         .catch((err) => console.log(err));
     },

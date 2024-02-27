@@ -1,10 +1,10 @@
 <template>
   <form @submit.prevent="handleSubmit">
-    <label>Title</label>
-    <input type="text" v-model="title" required />
-    <label>Details</label>
-    <textarea v-model="details" required></textarea>
-    <button>Add Project</button>
+    <label>Name</label>
+    <input type="text" v-model="name" required />
+    <label>Position</label>
+    <input type="text" v-model="position" required />
+    <button>Add Staff</button>
   </form>
 </template>
 
@@ -14,24 +14,23 @@ import Swal from "sweetalert2";
 export default {
   data() {
     return {
-      title: "",
-      details: "",
+      name: "",
+      position: "",
     };
   },
   methods: {
     handleSubmit() {
-      let project = {
-        title: this.title,
-        details: this.details,
-        complete: false,
+      let staff = {
+        name: this.name,
+        position: this.position,
         id: Math.floor(Math.random() * 10000).toString(),
       };
-      console.log(project);
+      console.log(staff);
 
-      fetch("http://localhost:3000/projects", {
+      fetch("http://localhost:3000/staffs", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(project),
+        body: JSON.stringify(staff),
       })
         .then((response) => {
           if (!response.ok) {
@@ -42,18 +41,18 @@ export default {
         .then((data) => {
           Swal.fire({
             title: "Success!",
-            text: "Project successfully created",
+            text: "staff successfully created",
             icon: "success",
             confirmButtonText: "OK",
           }).then(() => {
-            this.$router.push("/");
+            this.$router.push("/staff");
           });
         })
         .catch((err) => {
           console.log(err);
           Swal.fire({
             title: "Error!",
-            text: "There was an issue creating the project",
+            text: "There was an issue creating the staff",
             icon: "error",
             confirmButtonText: "OK",
           });
