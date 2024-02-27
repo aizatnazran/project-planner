@@ -3,7 +3,12 @@
     <FilterNav :current="current" @filterChange="current = $event" />
     <div v-if="projects.length">
       <div v-for="project in filteredProjects" :key="project.id">
-        <SingleProject :project="project" @delete="handleDelete" @complete="handleComplete" />
+        <SingleProject
+          :project="project"
+          :staffs="staffs"
+          @delete="handleDelete"
+          @complete="handleComplete"
+        />
       </div>
     </div>
   </div>
@@ -19,6 +24,7 @@ export default {
   data() {
     return {
       projects: [],
+      staffs: [],
       current: 'all',
     };
   },
@@ -26,6 +32,11 @@ export default {
     fetch('http://localhost:3000/projects')
       .then((res) => res.json())
       .then((data) => (this.projects = data))
+      .catch((err) => console.log(err));
+
+    fetch('http://localhost:3000/staffs')
+      .then((res) => res.json())
+      .then((data) => (this.staffs = data))
       .catch((err) => console.log(err));
   },
   methods: {

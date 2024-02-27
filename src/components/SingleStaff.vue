@@ -1,8 +1,8 @@
 <template>
   <div class="staff">
     <div class="actions">
-      <h3 @click="showDetails = !showDetails">{{ staff.name }}</h3>
-      <p @click="showDetails = !showDetails">{{ staff.position }}</p>
+      <h3 @click="toggleShowDetails">{{ staff.name }}</h3>
+      <p>{{ staff.position }}</p>
       <div class="icons">
         <span @click="confirmDelete" class="material-icons">delete</span>
         <router-link :to="{ name: 'EditStaff', params: { id: staff.id } }">
@@ -10,31 +10,52 @@
         </router-link>
       </div>
     </div>
+    <div v-if="showDetails" class="details">
+      <p v-if="assignedProjects.length > 0">Projects Assigned:</p>
+      <ul v-if="assignedProjects.length > 0">
+        <li v-for="project in assignedProjects" :key="project.id">{{ project.title }}</li>
+      </ul>
+      <p v-else>No projects assigned</p>
+      <!-- This line handles the no project assigned case -->
+    </div>
   </div>
 </template>
 
 <script>
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 
 export default {
-  props: ["staff"],
+  props: ['staff'],
   data() {
     return {
       showDetails: false,
-      uri: "", // Initialize URI here
+      assignedProjects: [],
     };
   },
-  mounted() {
-    this.uri = "http://localhost:3000/staffs/" + this.staff.id;
-  },
   methods: {
+    toggleShowDetails() {
+      this.showDetails = !this.showDetails;
+      if (this.showDetails) {
+        this.fetchAssignedProjects();
+      }
+    },
+    fetchAssignedProjects() {
+      fetch('http://localhost:3000/projects')
+        .then((response) => response.json())
+        .then((projects) => {
+          this.assignedProjects = projects.filter(
+            (project) => project.assignee === this.staff.id.toString()
+          );
+        })
+        .catch((err) => console.error('Error fetching projects:', err));
+    },
     confirmDelete() {
       Swal.fire({
         title: `Are you sure you want to delete ${this.staff.name}?`,
-        icon: "warning",
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonText: "Yes, delete it!",
-        cancelButtonText: "No, cancel!",
+        confirmButtonText: 'Yes, delete it!',
+        cancelButtonText: 'No, cancel!',
         reverseButtons: true,
       }).then((result) => {
         if (result.isConfirmed) {
@@ -43,28 +64,12 @@ export default {
       });
     },
     deleteStaff() {
-      fetch(this.uri, { method: "DELETE" })
+      fetch(`http://localhost:3000/staffs/${this.staff.id}`, { method: 'DELETE' })
         .then(() => {
-          Swal.fire({
-            icon: "success",
-            title: "Staff Deleted Successfully!",
-            showConfirmButton: false,
-            timer: 1500,
-          });
-          this.$emit("delete", this.staff.id);
+          Swal.fire('Deleted!', `${this.staff.name} has been deleted.`, 'success');
+          this.$emit('delete', this.staff.id);
         })
-        .catch((err) => console.log(err));
-    },
-    toggleComplete() {
-      fetch(this.uri, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ complete: !this.staff.complete }),
-      })
-        .then(() => {
-          this.$emit("complete", this.staff.id);
-        })
-        .catch((err) => console.log(err));
+        .catch((err) => console.error('Error deleting staff:', err));
     },
   },
 };

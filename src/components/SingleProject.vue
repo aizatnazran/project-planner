@@ -12,62 +12,63 @@
     </div>
     <div v-if="showDetails" class="details">
       <p>{{ project.details }}</p>
+      <h5>Assignee: {{ assigneeName }}</h5>
+      <!-- Display the assignee's name -->
     </div>
   </div>
 </template>
 
 <script>
-import Swal from "sweetalert2";
+import Swal from 'sweetalert2';
 
 export default {
-  props: ["project"],
+  props: ['project', 'staffs'],
   data() {
     return {
       showDetails: false,
-      uri: "http://localhost:3000/projects/" + this.project.id,
+      uri: 'http://localhost:3000/projects/' + this.project.id,
     };
+  },
+  computed: {
+    assigneeName() {
+      if (!this.staffs) return 'Loading...'; // or 'Unknown'
+      const assignee = this.staffs.find((staff) => staff.id === this.project.assignee);
+      return assignee ? assignee.name : 'None';
+    },
   },
   methods: {
     deleteProject() {
       // Call SweetAlert2 for confirmation
       Swal.fire({
-        title: "Are you sure?",
+        title: 'Are you sure?',
         text: "You won't be able to revert this!",
-        icon: "warning",
+        icon: 'warning',
         showCancelButton: true,
-        confirmButtonColor: "#3085d6",
-        cancelButtonColor: "#d33",
-        confirmButtonText: "Yes, delete it!",
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!',
       }).then((result) => {
         if (result.isConfirmed) {
-          fetch(this.uri, { method: "DELETE" })
+          fetch(this.uri, { method: 'DELETE' })
             .then(() => {
-              this.$emit("delete", this.project.id);
-              Swal.fire(
-                "Deleted!",
-                "Your project has been deleted.",
-                "success"
-              );
+              this.$emit('delete', this.project.id);
+              Swal.fire('Deleted!', 'Your project has been deleted.', 'success');
             })
             .catch((err) => {
               console.log(err);
-              Swal.fire(
-                "Error!",
-                "There was an issue deleting the project.",
-                "error"
-              );
+              Swal.fire('Error!', 'There was an issue deleting the project.', 'error');
             });
         }
       });
     },
     toggleComplete() {
       fetch(this.uri, {
-        method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ complete: !this.project.complete }),
       })
         .then(() => {
-          this.$emit("complete", this.project.id);
+          this.$emit('complete', this.project.id);
         })
         .catch((err) => console.log(err));
     },
