@@ -13,19 +13,20 @@
     <div v-if="showDetails" class="details">
       <p v-if="assignedProjects.length > 0">Projects Assigned:</p>
       <ul v-if="assignedProjects.length > 0">
-        <li v-for="project in assignedProjects" :key="project.id">{{ project.title }}</li>
+        <li v-for="project in assignedProjects" :key="project.id">
+          {{ project.title }}
+        </li>
       </ul>
       <p v-else>No projects assigned</p>
-      <!-- This line handles the no project assigned case -->
     </div>
   </div>
 </template>
 
 <script>
-import Swal from 'sweetalert2';
+import Swal from "sweetalert2";
 
 export default {
-  props: ['staff'],
+  props: ["staff"],
   data() {
     return {
       showDetails: false,
@@ -40,22 +41,22 @@ export default {
       }
     },
     fetchAssignedProjects() {
-      fetch('http://localhost:3000/projects')
+      fetch("http://localhost:3000/projects")
         .then((response) => response.json())
         .then((projects) => {
           this.assignedProjects = projects.filter(
             (project) => project.assignee === this.staff.id.toString()
           );
         })
-        .catch((err) => console.error('Error fetching projects:', err));
+        .catch((err) => console.error("Error fetching projects:", err));
     },
     confirmDelete() {
       Swal.fire({
         title: `Are you sure you want to delete ${this.staff.name}?`,
-        icon: 'warning',
+        icon: "warning",
         showCancelButton: true,
-        confirmButtonText: 'Yes, delete it!',
-        cancelButtonText: 'No, cancel!',
+        confirmButtonText: "Yes, delete it!",
+        cancelButtonText: "No, cancel!",
         reverseButtons: true,
       }).then((result) => {
         if (result.isConfirmed) {
@@ -64,12 +65,18 @@ export default {
       });
     },
     deleteStaff() {
-      fetch(`http://localhost:3000/staffs/${this.staff.id}`, { method: 'DELETE' })
+      fetch(`http://localhost:3000/staffs/${this.staff.id}`, {
+        method: "DELETE",
+      })
         .then(() => {
-          Swal.fire('Deleted!', `${this.staff.name} has been deleted.`, 'success');
-          this.$emit('delete', this.staff.id);
+          Swal.fire(
+            "Deleted!",
+            `${this.staff.name} has been deleted.`,
+            "success"
+          );
+          this.$emit("delete", this.staff.id);
         })
-        .catch((err) => console.error('Error deleting staff:', err));
+        .catch((err) => console.error("Error deleting staff:", err));
     },
   },
 };
@@ -100,5 +107,4 @@ h3 {
 .material-icons:hover {
   color: #777;
 }
-/* completed projects */
 </style>
